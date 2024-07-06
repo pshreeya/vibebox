@@ -1,4 +1,4 @@
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 import base64
 from requests import post, get
 import json
@@ -11,7 +11,7 @@ from streamlit_lottie import st_lottie
 import os
 import emoji
 
-load_dotenv('stuff.env')
+#load_dotenv('stuff.env')
 
 #SpotifyAPI setup 
 client_id = os.getenv('SPOTIFY_CLIENT_ID')
