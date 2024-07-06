@@ -70,13 +70,18 @@ def search_for_multiple_artists(token, artists, mood, mood_genre_mapping):
                 for genre in artist_genres:
                     if mood_genre.lower() == genre.lower():
                         match_count += 1
-                        break  # Stop checking further genres for this mood_genre
+                        break  
             
-            if match_count >= 1:  # Adjust this threshold as needed
+            if match_count >= 1: 
                 filtered_artists[artist] = {
                     "id": info['id'],
                     'genres': info['genres']
                 }
+                
+    if not filtered_artists:
+        # If no artist matches, randomly selects one
+        random_artist = random.choice(list(artist_info_dict.keys()))
+        filtered_artists[random_artist] = artist_info_dict[random_artist]
 
     return filtered_artists
 
@@ -84,7 +89,7 @@ def get_albums_by_artist(token, artist_ids, limit=5):
     artist_albums = {}
 
     for artist, info in artist_ids.items():
-        artist_id = info["id"]  # Assuming artist_ids is a dictionary with artist names as keys and info dictionaries as values
+        artist_id = info["id"]  
         url = f"https://api.spotify.com/v1/artists/{artist_id}/albums?limit={limit}"
         headers = get_auth_header(token)
         
@@ -97,12 +102,7 @@ def get_albums_by_artist(token, artist_ids, limit=5):
         
         except requests.exceptions.RequestException as e:
             print(f"Failed to get albums for artist {artist}: {e}")
-            artist_albums[artist] = []  # Handle the error gracefully, e.g., by returning empty list
-            continue
-        
-        except KeyError as e:
-            print(f"Failed to parse albums response for artist {artist}: {e}")
-            artist_albums[artist] = []  # Handle the error gracefully, e.g., by returning empty list
+            artist_albums[artist] = []  
             continue
 
     return artist_albums
@@ -160,8 +160,8 @@ mood_genre_mapping = {
     "Sad": ["R&B", "Indie", "Folk", "Blues", "Pop", "Hip-Hop", "Filmi"],
     "Happy": ["Pop", "Hip-Hop", "Dance", "Electronic", "Filmi"],
     "Angry": ["Rock", "Metal", "Punk", "Rap"],
-    "Nervous": ["Electronic", "Ambient", "Classical", "Filmi"],
-    "Frustrated": ["Hip-Hop", "Rock", "Alternative"],
+    "Nervous": ["Electronic", "Ambient", "Classical", "Filmi", "Pop", "Hip-Hop"],
+    "Frustrated": ["Hip-Hop", "Rock", "Alternative", "Pop"],
     "Bored": ["Electronic", "Chill", "Ambient", "Pop", "Hip-Hop", "Rap", "Filmi"],
     "Depressed": ["Soul", "Blues", "Folk", "Pop", "Hip-Hop", "Filmi"],
     "Motivated": ["Pop", "Hip-Hop", "Rock", "Rap", "Jazz"]
